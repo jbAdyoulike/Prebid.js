@@ -293,13 +293,16 @@ $$PREBID_GLOBAL$$.renderAd = function (doc, id) {
       if (adObject) {
         //save winning bids
         $$PREBID_GLOBAL$$._winningBids.push(adObject);
+
         //emit 'bid won' event here
         events.emit(BID_WON, adObject);
 
-        const { height, width, url, ad, mediaType } = adObject;
+        const { height, width, ad, mediaType } = adObject;
+        const url = adObject.adUrl;
 
-        if ((doc === document && !utils.inIframe()) || mediaType === 'video' || mediaType === 'video-outstream') {
-          // utils.logError(`Error trying to write ad. Ad render call ad id ${id} was prevented from writing to the main document.`);
+        if (doc === document && !utils.inIframe()) {
+          utils.logError(`Error trying to write ad. Ad render call ad id ${id} was prevented from writing to the main document.`);
+        } else if (mediaType === 'video' || mediaType === 'video-outstream') {
           performRenderViaRenderer(doc, adObject);
         } else if (ad) {
           if (isSrcdocSupported(doc)) {
@@ -308,6 +311,7 @@ $$PREBID_GLOBAL$$.renderAd = function (doc, id) {
             doc.write(ad);
             doc.close();
           }
+
           setRenderSize(doc, width, height);
         } else if (url) {
           doc.write(`<IFRAME SRC="${url}" FRAMEBORDER="0" SCROLLING="no" MARGINHEIGHT="0" MARGINWIDTH="0" TOPMARGIN="0" LEFTMARGIN="0" ALLOWTRANSPARENCY="true" WIDTH="${width}" HEIGHT="${height}"></IFRAME>`);
