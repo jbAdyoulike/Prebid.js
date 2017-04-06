@@ -312,7 +312,6 @@ $$PREBID_GLOBAL$$.renderAd = function (doc, id) {
             doc.write(ad);
             doc.close();
           }
-
           setRenderSize(doc, width, height);
         } else if (url) {
           doc.write(`<IFRAME SRC="${url}" FRAMEBORDER="0" SCROLLING="no" MARGINHEIGHT="0" MARGINWIDTH="0" TOPMARGIN="0" LEFTMARGIN="0" ALLOWTRANSPARENCY="true" WIDTH="${width}" HEIGHT="${height}"></IFRAME>`);
@@ -354,9 +353,6 @@ function performRenderViaRenderer(doc, adObject) {
       renderOutstream(cb.renderAd, adObject);
     };
   });
-
-  adloader.loadScript('http://cdn.adnxs.com/renderer/video/ANOutstreamVideo.js');
-
 }
 
 /**
