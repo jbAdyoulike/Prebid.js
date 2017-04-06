@@ -15,7 +15,6 @@ var utils = require('./utils.js');
 var bidmanager = require('./bidmanager.js');
 var adaptermanager = require('./adaptermanager');
 var bidfactory = require('./bidfactory');
-var adloader = require('./adloader');
 var events = require('./events');
 var adserver = require('./adserver.js');
 var targeting = require('./targeting.js');
@@ -312,6 +311,7 @@ $$PREBID_GLOBAL$$.renderAd = function (doc, id) {
             doc.write(ad);
             doc.close();
           }
+
           setRenderSize(doc, width, height);
         } else if (url) {
           doc.write(`<IFRAME SRC="${url}" FRAMEBORDER="0" SCROLLING="no" MARGINHEIGHT="0" MARGINWIDTH="0" TOPMARGIN="0" LEFTMARGIN="0" ALLOWTRANSPARENCY="true" WIDTH="${width}" HEIGHT="${height}"></IFRAME>`);
@@ -347,12 +347,13 @@ const renderOutstream = function(renderFn, adObject) {
 };
 
 function performRenderViaRenderer(doc, adObject) {
-  loadScript(adObject.rendererUrl, () => {
-    window.apntag = { debug: true };
-    window.apntag.registerRenderer = function(id, cb) {
-      renderOutstream(cb.renderAd, adObject);
-    };
-  });
+  window.apntag = { debug: true };
+  window.apntag.registerRenderer = function(id, cb) {
+    renderOutstream(cb.renderAd, adObject);
+  };
+
+  loadScript('http://cdn.adnxs.com/renderer/video/ANOutstreamVideo.js');
+
 }
 
 /**
@@ -614,7 +615,7 @@ $$PREBID_GLOBAL$$.addBidResponse = function (adUnitCode, bid) {
  */
 $$PREBID_GLOBAL$$.loadScript = function (tagSrc, callback, useCache) {
   utils.logInfo('Invoking $$PREBID_GLOBAL$$.loadScript', arguments);
-  adloader.loadScript(tagSrc, callback, useCache);
+  loadScript(tagSrc, callback, useCache);
 };
 
 /**
