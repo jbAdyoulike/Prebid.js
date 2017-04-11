@@ -335,6 +335,13 @@ $$PREBID_GLOBAL$$.renderAd = function (doc, id) {
 };
 
 const renderOutstream = function(renderFn, adObject) {
+  // collapse DFP div
+  document.getElementById(adObject.adUnitCode).firstChild.style.display = 'none';
+
+  // collapse ad unit div
+  document.getElementById(adObject.adUnitCode).style.display = 'none';
+
+  // call the render function
   adObject.adResponse.ad = adObject.adResponse.ads[0];
   adObject.adResponse.ad.video = adObject.adResponse.ad.rtb.video;
   renderFn({
@@ -352,8 +359,11 @@ function performRenderViaRenderer(doc, adObject) {
     renderOutstream(cb.renderAd, adObject);
   };
 
-  loadScript('http://cdn.adnxs.com/renderer/video/ANOutstreamVideo.js');
-
+  // use renderer defined by creative or default to ANOutstreamVideo.js
+  loadScript(
+    adObject.rendererUrl ||
+    'http://cdn.adnxs.com/renderer/video/ANOutstreamVideo.js'
+  );
 }
 
 /**
