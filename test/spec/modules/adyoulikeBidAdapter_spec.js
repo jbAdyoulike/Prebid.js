@@ -1,0 +1,352 @@
+import { expect } from 'chai';
+import { spec } from 'modules/adyoulikeBidAdapter';
+import { newBidder } from 'src/adapters/bidderFactory';
+
+const ENDPOINT = 'http://hb-api.omnitagjs.com/hb-api/prebid';
+const ENDPOINT_REGION01 = 'http://hb-api-region01.omnitagjs.com/hb-api/prebid';
+
+describe('Adyoulike Adapter', () => {
+  const adapter = newBidder(spec);
+
+  describe('inherited functions', () => {
+    it('exists and is a function', () => {
+      expect(adapter.callBids).to.exist.and.to.be.a('function');
+    });
+  });
+
+  describe('isBidRequestValid', () => {
+    let bid = {
+      'bidder': 'adyoulike',
+      'params': {
+        'placement': 'placement_0'
+      },
+      'bidId': 'bid_id_0',
+      'bidder': 'adyoulike',
+      'placementCode': 'adunit/hb-0',
+      'sizes': '300x250',
+      'transactionId': 'bid_id_0_transaction_id'
+    };
+
+    it('should return true when required params found', () => {
+      expect(spec.isBidRequestValid(bid)).to.equal(true);
+    });
+
+    it('should return false when no params', () => {
+      let bid = Object.assign({}, bid);
+      delete bid.params;
+      expect(spec.isBidRequestValid(bid)).to.equal(false);
+    });
+
+    it('should return false when no sizes', () => {
+      let bid = Object.assign({}, bid);
+      delete bid.sizes;
+      expect(spec.isBidRequestValid(bid)).to.equal(false);
+    });
+
+    it('should return false when no placement in params', () => {
+      let bid = Object.assign({}, bid);
+      bid.params = {}
+      expect(spec.isBidRequestValid(bid)).to.equal(false);
+    });
+  });
+
+  describe('buildRequests', () => {
+    let bid = [
+      {
+      'bidder': 'adyoulike',
+      'params': {
+        'placement': 'placement_0'
+      },
+      'bidId': 'bid_id_0',
+      'bidder': 'adyoulike',
+      'placementCode': 'adunit/hb-0',
+      'sizes': '300x250',
+      'transactionId': 'bid_id_0_transaction_id'
+    }
+  ];
+
+    it('should return true when required params found', () => {
+      const request = spec.buildRequests(bidRequests);
+
+      expect(spec.isBidRequestValid(bid)).to.equal(true);
+
+
+
+      const payload = JSON.parse(request.data);
+
+    });
+
+    it('should return false when no params', () => {
+      let bid = Object.assign({}, bid);
+      delete bid.params;
+      expect(spec.isBidRequestValid(bid)).to.equal(false);
+    });
+
+    it('should return false when no sizes', () => {
+      let bid = Object.assign({}, bid);
+      delete bid.sizes;
+      expect(spec.isBidRequestValid(bid)).to.equal(false);
+    });
+
+    it('should return false when no placement in params', () => {
+      let bid = Object.assign({}, bid);
+      bid.params = {}
+      expect(spec.isBidRequestValid(bid)).to.equal(false);
+    });
+  });
+
+
+  // const canonicalUrl = 'http://canonical.url/?t=%26';
+  // const bidderCode = 'adyoulike';
+  // const bidRequestWithEmptyPlacement = {
+  //   'bidder': 'adyoulike',
+  //   'params': {},
+  //   'bidId': 'bid_id_0',
+  //   'bidder': 'adyoulike',
+  //   'placementCode': 'adunit/hb-0',
+  //   'sizes': '300x250',
+  //   'transactionId': 'bid_id_0_transaction_id'
+  // };
+  // const bidRequestWithEmptySizes = {
+  //   'bidder': 'adyoulike',
+  //   'params': {
+  //     'placement': 'placement_0'
+  //   },
+  //   'bidId': 'bid_id_0',
+  //   'bidder': 'adyoulike',
+  //   'placementCode': 'adunit/hb-0',
+  //   'transactionId': 'bid_id_0_transaction_id'
+  // };
+  // const bidRequestWithSinglePlacement =
+  // const bidRequestMultiPlacements = {
+  //   'bidderCode': 'adyoulike',
+  //   'bids': [
+  //     {
+  //       'bidId': 'bid_id_0',
+  //       'bidder': 'adyoulike',
+  //       'placementCode': 'adunit/hb-0',
+  //       'params': {
+  //         'placement': 'placement_0'
+  //       },
+  //       'sizes': '300x250',
+  //       'transactionId': 'bid_id_0_transaction_id'
+  //     },
+  //     {
+  //       'bidId': 'bid_id_1',
+  //       'bidder': 'adyoulike',
+  //       'placementCode': 'adunit/hb-1',
+  //       'params': {
+  //         'placement': 'placement_1'
+  //       },
+  //       'sizes': [[300, 600]],
+  //       'transactionId': 'bid_id_1_transaction_id'
+  //     },
+  //     {
+  //       'bidId': 'bid_id_2',
+  //       'bidder': 'adyoulike',
+  //       'placementCode': 'adunit/hb-2',
+  //       'params': {},
+  //       'sizes': '300x400',
+  //       'transactionId': 'bid_id_2_transaction_id'
+  //     },
+  //     {
+  //       'bidId': 'bid_id_3',
+  //       'bidder': 'adyoulike',
+  //       'placementCode': 'adunit/hb-3',
+  //       'params': {
+  //         'placement': 'placement_3'
+  //       },
+  //       'transactionId': 'bid_id_3_transaction_id'
+  //     }
+  //   ],
+  // };
+
+  // const responseWithEmptyPlacement = [
+  //   {
+  //     'Placement': 'placement_0'
+  //   }
+  // ];
+  // const responseWithSinglePlacement = [
+  //   {
+  //     'Placement': 'placement_0',
+  //     'Banner': 'placement_0',
+  //     'Price': 0.5
+  //   }
+  // ];
+  // const responseWithMultiplePlacements = [
+  //   {
+  //     'Placement': 'placement_0',
+  //     'Banner': 'placement_0',
+  //     'Price': 0.5
+  //   },
+  //   {
+  //     'Placement': 'placement_1',
+  //     'Banner': 'placement_1',
+  //     'Price': 0.6
+  //   }
+  // ];
+
+
+  // describe('should return true when required params found', () => {
+  //   const bidRequestWithSinglePlacement = {
+  //     'bidder': 'adyoulike',
+  //     'params': {
+  //       'placement': 'placement_0'
+  //     },
+  //     'bidId': 'bid_id_0',
+  //     'bidder': 'adyoulike',
+  //     'placementCode': 'adunit/hb-0',
+  //     'sizes': '300x250',
+  //     'transactionId': 'bid_id_0_transaction_id'
+  //   };
+
+
+  //   it('requires placement request', () => {
+  //     expect(spec.isBidRequestValid(bidRequestWithSinglePlacement)).to.equal(true);
+  //   });
+
+  //   it('requires sizes in request', () => {
+  //     adapter.callBids(bidRequestWithEmptySizes);
+  //     expect(requests).to.be.empty;
+  //     expect(addBidResponse.calledOnce).to.equal(false);
+  //   });
+
+  //   it('sends bid request to endpoint with single placement', () => {
+  //     adapter.callBids(bidRequestWithSinglePlacement);
+  //     expect(requests[0].url).to.contain(endpoint);
+  //     expect(requests[0].method).to.equal('POST');
+
+  //     expect(requests[0].url).to.contains('CanonicalUrl=' + encodeURIComponent(canonicalUrl));
+
+  //     let body = JSON.parse(requests[0].requestBody);
+  //     expect(body.Version).to.equal('0.2');
+  //     expect(body.Placements).deep.equal(['placement_0']);
+  //     expect(body.PageRefreshed).to.equal(false);
+  //     expect(body.TransactionIds).deep.equal({ 'placement_0': 'bid_id_0_transaction_id' });
+  //   });
+
+  //   it('sends bid request to endpoint with single placement without canonical', () => {
+  //     canonicalQuery.restore();
+
+  //     adapter.callBids(bidRequestWithSinglePlacement);
+  //     expect(requests[0].url).to.contain(endpoint);
+  //     expect(requests[0].method).to.equal('POST');
+
+  //     expect(requests[0].url).to.not.contains('CanonicalUrl=' + encodeURIComponent(canonicalUrl));
+
+  //     let body = JSON.parse(requests[0].requestBody);
+  //     expect(body.Version).to.equal('0.2');
+  //     expect(body.Placements).deep.equal(['placement_0']);
+  //     expect(body.PageRefreshed).to.equal(false);
+  //     expect(body.TransactionIds).deep.equal({ 'placement_0': 'bid_id_0_transaction_id' });
+  //   });
+
+  //   it('sends bid request to endpoint with multiple placements', () => {
+  //     adapter.callBids(bidRequestMultiPlacements);
+  //     expect(requests[0].url).to.contain(endpoint);
+  //     expect(requests[0].method).to.equal('POST');
+
+  //     expect(requests[0].url).to.contains('CanonicalUrl=' + encodeURIComponent(canonicalUrl));
+
+  //     let body = JSON.parse(requests[0].requestBody);
+  //     expect(body.Version).to.equal('0.2');
+  //     expect(body.Placements).deep.equal(['placement_0', 'placement_1']);
+  //     expect(body.PageRefreshed).to.equal(false);
+  //     expect(body.TransactionIds).deep.equal({ 'placement_0': 'bid_id_0_transaction_id', 'placement_1': 'bid_id_1_transaction_id' });
+  //   });
+  // });
+
+  // describe('response function', () => {
+  //   let server;
+  //   let addBidResponse;
+
+  //   beforeEach(() => {
+  //     server = sinon.fakeServer.create();
+  //     addBidResponse = sinon.stub(bidmanager, 'addBidResponse');
+  //   });
+
+  //   afterEach(() => {
+  //     server.restore();
+  //     bidmanager.addBidResponse.restore();
+  //   });
+
+  //   it('invalid json', () => {
+  //     server.respondWith('{');
+  //     adapter.callBids(bidRequestWithSinglePlacement);
+  //     server.respond();
+
+  //     expect(addBidResponse.calledOnce).to.equal(true);
+  //     expect(addBidResponse.args[0]).to.have.lengthOf(2);
+  //     expect(addBidResponse.args[0][1].getStatusCode()).to.equal(STATUS.NO_BID);
+  //     expect(addBidResponse.args[0][1].bidderCode).to.equal(bidderCode);
+  //   });
+
+  //   it('receive reponse with empty placement', () => {
+  //     server.respondWith(JSON.stringify(responseWithEmptyPlacement));
+  //     adapter.callBids(bidRequestWithSinglePlacement);
+  //     server.respond();
+
+  //     expect(addBidResponse.calledOnce).to.equal(true);
+  //     expect(addBidResponse.args[0]).to.have.lengthOf(2);
+  //     expect(addBidResponse.args[0][1].getStatusCode()).to.equal(STATUS.NO_BID);
+  //     expect(addBidResponse.args[0][1].bidderCode).to.equal(bidderCode);
+  //   });
+
+  //   it('receive reponse with single placement', () => {
+  //     server.respondWith(JSON.stringify(responseWithSinglePlacement));
+  //     adapter.callBids(bidRequestWithSinglePlacement);
+  //     server.respond();
+
+  //     expect(addBidResponse.calledOnce).to.equal(true);
+  //     expect(addBidResponse.args[0]).to.have.lengthOf(2);
+  //     expect(addBidResponse.args[0][1].getStatusCode()).to.equal(STATUS.GOOD);
+  //     expect(addBidResponse.args[0][1].cpm).to.equal(0.5);
+  //     expect(addBidResponse.args[0][1].ad).to.equal('placement_0');
+  //     expect(addBidResponse.args[0][1].width).to.equal(300);
+  //     expect(addBidResponse.args[0][1].height).to.equal(250);
+  //   });
+
+  //   it('receive reponse with multiple placement', () => {
+  //     server.respondWith(JSON.stringify(responseWithMultiplePlacements));
+  //     adapter.callBids(bidRequestMultiPlacements);
+  //     server.respond();
+
+  //     expect(addBidResponse.calledTwice).to.equal(true);
+
+  //     expect(addBidResponse.args[0]).to.have.lengthOf(2);
+  //     expect(addBidResponse.args[0][1].getStatusCode()).to.equal(STATUS.GOOD);
+  //     expect(addBidResponse.args[0][1].bidderCode).to.equal(bidderCode);
+  //     expect(addBidResponse.args[0][1].cpm).to.equal(0.5);
+  //     expect(addBidResponse.args[0][1].ad).to.equal('placement_0');
+  //     expect(addBidResponse.args[0][1].width).to.equal(300);
+  //     expect(addBidResponse.args[0][1].height).to.equal(250);
+
+  //     expect(addBidResponse.args[1]).to.have.lengthOf(2);
+  //     expect(addBidResponse.args[1][1].getStatusCode()).to.equal(STATUS.GOOD);
+  //     expect(addBidResponse.args[1][1].bidderCode).to.equal(bidderCode);
+  //     expect(addBidResponse.args[1][1].cpm).to.equal(0.6);
+  //     expect(addBidResponse.args[1][1].ad).to.equal('placement_1');
+  //     expect(addBidResponse.args[1][1].width).to.equal(300);
+  //     expect(addBidResponse.args[1][1].height).to.equal(600);
+  //   });
+
+  //   it('receive reponse with invalid placement number', () => {
+  //     server.respondWith(JSON.stringify(responseWithSinglePlacement));
+  //     adapter.callBids(bidRequestMultiPlacements);
+  //     server.respond();
+
+  //     expect(addBidResponse.calledTwice).to.equal(true);
+
+  //     expect(addBidResponse.args[0]).to.have.lengthOf(2);
+  //     expect(addBidResponse.args[0][1].getStatusCode()).to.equal(STATUS.GOOD);
+  //     expect(addBidResponse.args[0][1].bidderCode).to.equal(bidderCode);
+  //     expect(addBidResponse.args[0][1].cpm).to.equal(0.5);
+  //     expect(addBidResponse.args[0][1].ad).to.equal('placement_0');
+  //     expect(addBidResponse.args[0][1].width).to.equal(300);
+  //     expect(addBidResponse.args[0][1].height).to.equal(250);
+
+  //     expect(addBidResponse.args[1]).to.have.lengthOf(2);
+  //     expect(addBidResponse.args[1][1].getStatusCode()).to.equal(STATUS.NO_BID);
+  //   });
+  // });
+});
